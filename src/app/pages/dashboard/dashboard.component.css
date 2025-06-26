@@ -1,0 +1,25 @@
+.dashboard-card{
+    width: 1850px;
+    height: 900px;
+    background-color: #091420;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+}
+
+.panelizq{
+    width: 300px;
+    height: 900px;
+    background-color: #091420;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.panelder{
+    width: 100%;
+    height: 900px;
+    background-color: #16273c;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
