@@ -11,7 +11,7 @@
   );
   padding: 2rem;
   width: 450px;
-  height: 850px;
+  height: 780px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   box-sizing: border-box;
@@ -21,16 +21,23 @@
 }
 
 .login-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-  cursor: pointer;
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    cursor: pointer;
+  } 
+
+@media(max-width: 768px) {
+  .login-card{
+    width: 90%;
+    min-width: 320px;
+  }
 }
 
 .logo{
     width: 200px;
     height: auto;
-    margin: 50px auto;
-    margin-bottom: 80px;
+    margin: 2.5rem auto;
+    margin-bottom: 3rem;
     display: block;
     object-fit: contain;
     border-radius: 10px;
@@ -41,7 +48,7 @@
 .linea-azul {
   height: 2px;
   width: 100%;
-  margin: 16px 0;
+  margin: 1rem 0;
   background: #247db0;
   animation: respiroAzul 2.5s infinite ease-in-out;
   border-radius: 1px;
@@ -60,7 +67,7 @@
     border: 0;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 1rem;
 }
 
 input[type="text"],
@@ -71,7 +78,7 @@ input[type="password"] {
   border-radius: 9999px;
   background-color: transparent;
   color: #d3d6d9;
-  font-size: 18px;
+  font-size: 1rem;
   outline: none;
   transition: border-color 0.3s ease;
 }
@@ -92,13 +99,14 @@ input[type="password"]:focus {
 .contenedor-checkbox{
     display: flex;
     justify-content: right;
+    padding-right: 0.5rem;
 }
 
 .remember{
     color:#d3d6d9;
     display: flex;
   align-items: center;
-  font-size: 18px;
+  font-size: 1rem;
   cursor: pointer;
   user-select: none;
 }
@@ -149,8 +157,7 @@ input[type="password"]:focus {
 
 .contenedor-btnlogin{
     margin-top: auto;
-    margin-bottom: 50px;
-   
+    margin-bottom: 2.5rem;
     display: flex;
     justify-content: center;
 }
@@ -162,18 +169,73 @@ input[type="password"]:focus {
   border-radius: 9999px; 
   padding: 0;
   height: 40px;  
-  font-size: 20px;
-  /* font-weight: bold; */
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
   width: 50%;  
   min-width: 100px;
-  margin-top: auto;
 }
 
 .btnlogin:hover {
   background-color: #1b9cdd;
-  color: black;
+  color: #091420;
   border-color: #1b9cdd;
+}
+
+@media (max-width: 480px) {
+  
+  .login-card {
+    /* Hacemos el padding más pequeño en móviles para ganar espacio */
+    padding: 1.5rem 1rem; 
+    gap: 0.8rem; /* Reducimos el espacio entre elementos */
+  }
+
+  .logo {
+    /* Hacemos el logo y sus márgenes más pequeños */
+    width: 150px;
+    margin: 1.5rem auto;
+    margin-bottom: 2rem;
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    /* Podemos hacer la fuente un poco más pequeña si es necesario */
+    font-size: 0.9rem;
+  }
+
+  .remember {
+    font-size: 0.9rem;
+  }
+  
+  .contenedor-btnlogin {
+    margin-bottom: 1.5rem; /* Menos margen inferior para el botón */
+  }
+
+  .btnlogin {
+    /* Hacemos el botón un poco más grande en proporción para que sea fácil de tocar */
+    width: 70%; 
+    font-size: 1rem;
+  }
+}
+
+/* CSS VALIDACIONES */
+/* Estilos para los mensajes de error */
+.error-messages {
+  width: 100%; /* O el ancho de tus inputs */
+  text-align: left;
+  margin-top: 4px; /* Espacio entre el input y el error */
+  margin-left: 8px; /* Pequeña indentación */
+}
+
+.error-messages small {
+  color: #e53935; /* Un color rojo para errores */
+  font-size: 0.8em;
+  display: block; /* Para que cada error aparezca en una nueva línea si hay varios */
+}
+
+/* Opcional: añade un borde rojo a los inputs inválidos */
+input.ng-invalid.ng-touched {
+    border: 1px solid #e53935;
 }
 

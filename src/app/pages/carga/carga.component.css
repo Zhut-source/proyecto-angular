@@ -1,0 +1,150 @@
+.carga-card{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.area-carga{
+    display: flex;
+    padding: 2rem;
+    width: 70%;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+    
+}
+
+.area-info{
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    flex: 1;
+}
+
+.cont-titulo{
+    margin: 2rem;
+}
+
+.txtcarga{
+    color: #f0f0f0;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.txtinfo{
+    color: #f0f0f0;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.contenedor-carga {
+  position: relative;
+  flex: 1;
+  padding: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  z-index: 1;
+  overflow: hidden;
+  background-color: #0d1117; /* fondo oscuro para resaltar efecto */
+}
+
+.contenedor-carga::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  z-index: -1;
+  border-radius: 15px;
+  background: linear-gradient(90deg, #247db0, #56a8d9, #247db0);
+  background-size: 300% 100%;
+  animation: bordeIluminado 3s linear infinite;
+}
+
+@keyframes bordeIluminado {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.img-carga{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.paf{
+    color: #f0f0f0;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+
+.img-plus{
+    width: 200px;
+    height: auto;
+    background-color: transparent;
+}
+
+.linea-azul {
+  height: 2px;
+  width: 100%;
+  margin: 16px 0;
+  background: #247db0;
+  animation: respiroAzul 2.5s infinite ease-in-out;
+  border-radius: 1px;
+}
+
+@keyframes respiroAzul {
+  0%   { background-color: #247db0; }
+  50%  { background-color: #56a8d9; }
+  100% { background-color: #247db0; }
+}
+
+.lista-detalles{
+    justify-content: left;
+}
+
+.item-detalle{
+    color: #f0f0f0;
+    font-size: 1rem;
+}
+
+.contenedor-btnguardar{
+    margin-top: auto;
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-guardar{
+  background-color: transparent;
+  color: #1b9cdd;
+  border: 2px solid #1b9cdd;
+  border-radius: 9999px; 
+  padding: 0;
+  height: 40px;  
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 50%;  
+  min-width: 100px;
+}
+
+.btn-guardar:hover{
+    background-color: #1b9cdd;
+  color: black;
+  border-color: #1b9cdd;
+}

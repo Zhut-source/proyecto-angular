@@ -1,8 +1,28 @@
 <div class="dashboard-card">
     <div class="panelizq">
+        <div class="contenedor-logo">
+            <img src="assets/pictures/Cenel logo.png" alt="Logo" class="logo" />
+        </div>
+        <div class="contenedor-username">
+            <label for="text" class="nombre-usuario">Gerente: Angelo Meza</label>
+        </div>
+
+        <div class="linea-azul"></div>
+
+        <button class="btnnavbar" routerLink="/dashboard/resumen" routerLinkActive="activo">Inicio</button>
+        <button class="btnnavbar" routerLink="/dashboard/cargas" routerLinkActive="activo">Carga de datos</button>
+        <button class="btnnavbar" routerLink="/dashboard/ajustes">Historial</button>
+        <button class="btnnavbar" routerLink="/dashboard/ajustes">Predic</button>
+        <button class="btnnavbar" routerLink="/dashboard/ajustes">Comparaciones</button>
+
+        <div class="linea-azul"></div>
+
+        <button class="btnnavbar" routerLink="/dashboard/registro" routerLinkActive="activo">Registro</button>
 
     </div>
     <div class="panelder">
+
+        <router-outlet></router-outlet>
 
     </div>
     

@@ -8,18 +8,100 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
 }
 
+.contenedor-logo{
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    width: full;
+    height: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.contenedor-username{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.nombre-usuario{
+    color: #f0f0f0;
+    font-size: 18px;
+}
+
+.logo{
+    width: 200px;
+    height: auto;
+    margin: 0;
+    display: block;
+    object-fit: contain;
+    border-radius: 10px;
+    padding: 0;
+    border: 0;
+}
+
+.linea-azul {
+  height: 2px;
+  width: 100%;
+  margin: 16px 0;
+  background: #247db0;
+  animation: respiroAzul 2.5s infinite ease-in-out;
+  border-radius: 1px;
+}
+
+@keyframes respiroAzul {
+  0%   { background-color: #247db0; }
+  50%  { background-color: #56a8d9; }
+  100% { background-color: #247db0; }
+}
+
 .panelizq{
     width: 300px;
-    height: 900px;
-    background-color: #091420;
+    height: full;
+    background: linear-gradient(
+    to bottom,
+    #16273c 0%,     
+    #091420 100%      
+  );
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 5px;
 }
 
 .panelder{
     width: 100%;
-    height: 900px;
+    height: full;
     background-color: #16273c;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
+
+.btnnavbar{
+    margin: 0;
+    padding: 5px;
+    padding-left: 15px;
+    border: 0;
+    background-color: transparent;
+    color: #f0f0f0;
+    font-size: 18px;
+    text-align: left;
+    border-radius: 6px;
+    height: 45px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btnnavbar.activo {
+    background-color: #16273c;
+    color: white;
+}
+
+.btnnavbar:hover{
+    background-color: #16273c;
+}
+

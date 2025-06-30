@@ -1,0 +1,50 @@
+.form-group-btn{
+    margin-top: auto;
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.cancel-btn{
+  background-color: transparent;
+  color: #1b9cdd;
+  border: 2px solid #1b9cdd;
+  border-radius: 9999px; 
+  padding: 0;
+  height: 40px;  
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 50%;  
+  min-width: 100px;
+}
+
+.cancel-btn{
+    background-color: #1b9cdd;
+  color: black;
+  border-color: #1b9cdd;
+}
+
+.submit-btn{
+  background-color: transparent;
+  color: #1b9cdd;
+  border: 2px solid #1b9cdd;
+  border-radius: 9999px; 
+  padding: 0;
+  height: 40px;  
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 50%;  
+  min-width: 100px;
+}
+
+.submit-btn:hover{
+   background-color: #1b9cdd;
+  color: black;
+  border-color: #1b9cdd;
+}
