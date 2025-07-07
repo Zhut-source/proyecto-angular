@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AuthService } from 'src/app/services/auth.service';
-// --- 1. IMPORTA TU SERVICIO ---
-
+import { Router } from '@angular/router'; // <-- 1. IMPORTA EL ROUTER
 
 @Component({
   selector: 'app-login',
@@ -24,16 +23,19 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LoginComponent implements OnInit {
 
   loginForm!: FormGroup;
+  // --- AÑADE ESTAS PROPIEDADES ---
+  loading = false;
+  apiError: string | null = null; // Para guardar el error que viene de la API
 
-  // --- 2. INYECTA EL SERVICIO EN EL CONSTRUCTOR ---
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService // Inyección de dependencias
+    private authService: AuthService,
+    private router: Router // <-- 3. INYECTA EL ROUTER
   ) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
+      username: ['', [Validators.required, Validators.maxLength(254)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(128)]],
       remember: [false]
     });
@@ -43,33 +45,34 @@ export class LoginComponent implements OnInit {
   get password() { return this.loginForm.get('password'); }
 
   onSubmit(): void {
+    // Si hay un error de la API y el usuario intenta de nuevo, lo limpiamos
+    this.apiError = null; 
+    
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    // --- 3. LLAMA AL SERVICIO CON LOS DATOS DEL FORMULARIO ---
-    console.log('Formulario válido. Procediendo a llamar al servicio de autenticación...');
+    // --- ACTUALIZA EL ESTADO DE CARGA ---
+    this.loading = true;
 
-    // Creamos el objeto solo con los campos que la API necesita
     const credentials = {
       username: this.loginForm.value.username,
       password: this.loginForm.value.password
     };
     
-    // El servicio devuelve un Observable, por lo que debemos "suscribirnos" para que se ejecute.
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        // Esto se ejecuta si la llamada (simulada o real) es exitosa
-        console.log('5. [LoginComponent] Respuesta recibida del servicio:', response);
-        console.log('¡Login exitoso!');
-        // Aquí, en el futuro, redirigirías al usuario a la página principal.
-        // Por ejemplo: this.router.navigate(['/dashboard']);
+        this.loading = false; // Detenemos la carga
+        console.log('¡Login exitoso!', response);
+        // Redirigimos al dashboard tras un login correcto
+        this.router.navigate(['/dashboard']); 
       },
       error: (error) => {
-        // Esto se ejecuta si la API devuelve un error
-        console.error('[LoginComponent] Error recibido del servicio:', error);
-        // Aquí mostrarías un mensaje de error al usuario (ej: "Credenciales incorrectas")
+        this.loading = false; // Detenemos la carga
+        // --- ASIGNA EL MENSAJE DE ERROR A NUESTRA PROPIEDAD ---
+        this.apiError = error.message; 
+        console.error('[LoginComponent] Error recibido del servicio:', this.apiError);
       }
     });
   }

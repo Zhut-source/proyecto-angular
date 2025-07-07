@@ -1,3 +1,4 @@
+
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-card">
 
     <img src="assets/pictures/Cenel logo.png" alt="Logo" class="logo" />
@@ -6,12 +7,11 @@
 
     <div class="contenedor-inputs">
         <!-- Input de Usuario con mensajes de error -->
-        <input type="text" placeholder="Usuario (ejemplo@ejemplo.ejemplo)" formControlName="username" />
+        <input type="text" placeholder="Usuario" formControlName="username" />
         <!-- Contenedor de errores para el usuario -->
         <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="error-messages" [@errorAnimation]>
-            <small *ngIf="username?.hasError('required')">El correo es requerido.</small>
-            <small *ngIf="username?.hasError('email')">Por favor, introduce un formato de correo válido.</small>
-            <small *ngIf="username?.hasError('maxlength')">El correo no puede exceder los 254 caracteres.</small>
+            <small *ngIf="username?.hasError('required')">El usuario es requerido.</small>
+            <small *ngIf="username?.hasError('maxlength')">El usuario no puede exceder los 254 caracteres.</small>
         </div>
 
         <!-- Input de Contraseña con mensajes de error -->
@@ -22,6 +22,11 @@
             <small *ngIf="password?.hasError('minlength')">La contraseña debe tener al menos 8 caracteres.</small>
             <small *ngIf="password?.hasError('maxlength')">La contraseña no puede exceder los 128 caracteres.</small>
         </div>
+    </div>
+    
+    <!-- div error mensaje desde API -->
+    <div *ngIf="apiError" class="error-messages api-error" [@errorAnimation]> 
+      <small>{{ apiError }}</small>
     </div>
 
     <div class="contenedor-checkbox">
@@ -34,8 +39,10 @@
     <div class="linea-azul"></div>
     
     <div class="contenedor-btnlogin">
-        <!-- El botón se deshabilitará automáticamente si el formulario no es válido -->
-        <button type="submit" class="btnlogin" [disabled]="loginForm.invalid">Iniciar sesión</button>
+        <button type="submit" class="btnlogin" [disabled]="loginForm.invalid || loading">
+            <!-- Mostramos un texto diferente si está cargando -->
+            {{ loading ? 'Iniciando...' : 'Iniciar sesión' }}
+        </button>
     </div>
   
 </form>

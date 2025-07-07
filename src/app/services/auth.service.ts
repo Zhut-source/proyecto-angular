@@ -1,60 +1,104 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs'; // 'of' nos permite crear un Observable simple
-import { tap } from 'rxjs/operators'; // 'tap' nos permite ejecutar código sin modificar la respuesta
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
-// (Opcional pero recomendado) Define una interfaz para las credenciales
-export interface AuthCredentials {
+// He renombrado la interfaz para que coincida con el nombre de tu DTO en el backend
+export interface LoginDto {
   username: string;
   password: string;
 }
 
+// Interfaz para la respuesta que esperas de tu API (basado en tu AuthController)
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  data: any; // Puedes definir una interfaz más estricta si quieres
+  accessToken: string;
+}
+
 @Injectable({
-  providedIn: 'root' // Esto hace que el servicio esté disponible en toda la aplicación
+  providedIn: 'root'
 })
 export class AuthService {
 
-  // URL de tu API. Déjala preparada.
-  private apiUrl = 'https://tu-api.com/auth/login'; // <--- CAMBIA ESTO EN EL FUTURO
+  // === PASO 1: CORRIGE LA URL DE TU API ===
+  // Usa la URL que aparece en la consola de Visual Studio cuando ejecutas el backend.
+  private apiUrl = 'https://localhost:7118/api/v1/Auth'; // <-- ¡MUY IMPORTANTE CAMBIAR ESTO!
 
-  // Inyectamos HttpClient para poder hacer peticiones HTTP en el futuro
   constructor(private http: HttpClient) { }
 
   /**
-   * Método para iniciar sesión.
+   * Método para iniciar sesión. Conecta con la API real.
    * @param credentials - Un objeto con 'username' y 'password'.
-   * @returns un Observable que simula la respuesta de la API.
+   * @returns un Observable con la respuesta de la API.
    */
-  login(credentials: AuthCredentials): Observable<any> {
+  login(credentials: LoginDto): Observable<AuthResponse> {
     
-    console.log('1. [AuthService] Se ha llamado al método login.');
-    console.log('2. [AuthService] Credenciales recibidas:', credentials);
+    console.log('[AuthService] Intentando iniciar sesión con:', credentials);
 
-    // --- AQUÍ IRÁ TU LLAMADA REAL A LA API EN EL FUTURO ---
-    /*
-      Cuando estés listo para conectar con el backend, descomenta esta sección
-      y elimina la sección "SIMULACIÓN".
-
-      return this.http.post<any>(this.apiUrl, credentials).pipe(
-        tap(response => {
-          // Aquí manejarías la respuesta exitosa, por ejemplo, guardando un token.
-          console.log('Respuesta real de la API:', response);
-          // localStorage.setItem('authToken', response.token);
-        })
-      );
-    */
-
-    // --- INICIO DE LA SIMULACIÓN (PARA VER EL OBJETO ENVIADO) ---
-    // Por ahora, solo mostraremos que el objeto se envió y devolveremos
-    // un Observable simulado que se completa inmediatamente.
-    console.log('3. [AuthService] Simulación de llamada a API. Devolviendo un Observable de éxito.');
-    const simulacionDeRespuesta = { success: true, user: credentials.username, message: 'Login simulado exitoso' };
-    
-    return of(simulacionDeRespuesta).pipe(
+    // === PASO 2: LLAMADA REAL A LA API ===
+    // Ahora usamos el método real 'http.post' y eliminamos la simulación.
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        console.log('4. [AuthService] La simulación ha respondido:', response);
-      })
+        // 'tap' se ejecuta cuando la respuesta es exitosa (código 200-299).
+        // Aquí guardamos el token JWT que nos devuelve la API.
+        if (response && response.success && response.accessToken) {
+          console.log('[AuthService] Login exitoso. Respuesta de la API:', response);
+          localStorage.setItem('jwtToken', response.accessToken);
+          console.log('[AuthService] Token guardado en localStorage.');
+        } else {
+          // Si success es false pero la API responde con 200 OK (esto no debería pasar, pero por si acaso)
+          console.warn('[AuthService] La API respondió con éxito pero el campo "success" es falso.');
+        }
+      }),
+      catchError(this.handleError) // 'catchError' se ejecuta si la API devuelve un error (código 4xx o 5xx).
     );
-    // --- FIN DE LA SIMULACIÓN ---
+  }
+
+  /**
+   * Método para cerrar sesión.
+   */
+  logout(): void {
+    console.log('[AuthService] Cerrando sesión.');
+    localStorage.removeItem('jwtToken');
+    // Aquí también podrías redirigir al usuario a la página de login.
+    // (necesitarías inyectar `Router` en el constructor)
+    // this.router.navigate(['/login']);
+  }
+
+  /**
+   * Método para obtener el token guardado.
+   * @returns el token JWT o null si no existe.
+   */
+  getToken(): string | null {
+    return localStorage.getItem('jwtToken');
+  }
+
+  /**
+   * Método para comprobar si el usuario está autenticado.
+   * @returns true si hay un token guardado, false si no.
+   */
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  /**
+   * Manejador de errores centralizado para las peticiones HTTP.
+   * Esto te dará mensajes de error mucho más claros en la consola.
+   */
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Ocurrió un error desconocido.';
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente o de red. (Ej: no hay conexión a internet)
+      errorMessage = `Error del cliente: ${error.error.message}`;
+    } else {
+      // El backend devolvió un código de error.
+      // Tu API devuelve un objeto con un campo "message", así que lo usamos.
+      errorMessage = error.error?.message || `Error del servidor: ${error.status}. Por favor, revise la consola del backend.`;
+    }
+    console.error(`[AuthService] Error en la petición: ${errorMessage}`);
+    // Devolvemos un observable que emite el error para que el componente que llamó al login lo pueda manejar.
+    return throwError(() => new Error(errorMessage));
   }
 }

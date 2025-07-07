@@ -8,10 +8,11 @@ import { RegistroComponent } from './pages/registro/registro.component';
 
 const routes: Routes = [
 
-  // { path: '',component: LoginComponent},
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, 
   { path: 'login', component: LoginComponent},
   { path: 'dashboard', component: DashboardComponent,
     children:[
+      { path: '', redirectTo: 'resumen', pathMatch: 'full' }, 
       { path: 'resumen', component: ResumenComponent},
       { path: 'cargas', component: CargaComponent},
       { path: 'registro', component: RegistroComponent}

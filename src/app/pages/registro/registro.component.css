@@ -1,50 +1,230 @@
-.form-group-btn{
-    margin-top: auto;
-    margin-bottom: 2.5rem;
+.register-container{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+.buscador-card{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: linear-gradient(to bottom, #091420 0%,#16273c 50%, #091420 100%);
+  padding: 2rem;
+  width: auto; 
+  height: auto; 
+  min-height: 800px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  color: #d3d6d9;
+  flex: 1;
+  margin: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.buscador-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    cursor: pointer;
+  } 
+
+.register-card {
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: linear-gradient(to bottom, #091420 0%,#16273c 50%, #091420 100%);
+  padding: 2rem;
+  width: 450px; 
+  height: auto; 
+  min-height: 800px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  color: #d3d6d9;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+}
+
+.register-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    cursor: pointer;
+  } 
+
+.register-card h2 {
+  color: #fff;
+  margin-bottom: 0.2rem;
+}
+
+.register-card p {
+  font-size: 0.9rem;
+  color: #d3d6d9b9;
+  margin-top: 0;
+}
+
+.linea-azul {
+  height: 2px;
+  width: 100%;
+  margin: 0.5rem 0;
+  background: #247db0;
+  animation: respiroAzul 2.5s infinite ease-in-out;
+  border-radius: 1px;
+}
+
+@keyframes respiroAzul {
+  0%   { background-color: #247db0; }
+  50%  { background-color: #56a8d9; }
+  100% { background-color: #247db0; }
+}
+
+.contenedor-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Espacio entre cada campo */
+}
+
+/* Estilo unificado para inputs y selects */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select {    
+  height: 40px;
+  width: 100%;
+  padding: 0 18px;
+  border: 2px solid #247db0;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: #d3d6d9;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  -webkit-appearance: none; /* Quita estilos por defecto en Safari/Chrome */
+  -moz-appearance: none;    /* Quita estilos por defecto en Firefox */
+  appearance: none;
+}
+
+select {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23247db0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.4-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.65em auto;
+}
+
+select option {
+    background: #091420;
+    color: #d3d6d9;
+}
+
+/* Placeholder color */
+input::placeholder, select:invalid {
+  color: #d3d6d9b9;
+}
+
+input:focus, select:focus {
+  border-color: #1a5d89;
+}
+
+/* Estilo para el input deshabilitado */
+input:disabled {
+  background-color: #ffffff1a;
+  border-color: #247db080;
+  cursor: not-allowed;
+  color: #d3d6d980;
+}
+
+.dropdown-row {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+/* NUEVO: Contenedor estándar para cada campo */
+.form-field-wrapper {
+    flex: 1; /* Permite que ocupe el espacio disponible en .dropdown-row */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Fila para poner 2 dropdowns juntos */
+
+
+/* Botones */
+.contenedor-botones {
+    margin-top: auto;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between; /* Espacio entre botones */
     gap: 1rem;
 }
 
-.cancel-btn{
-  background-color: transparent;
-  color: #1b9cdd;
-  border: 2px solid #1b9cdd;
-  border-radius: 9999px; 
+.btn-primary, .btn-secondary {
+  border-radius: 9999px;
   padding: 0;
-  height: 40px;  
+  height: 40px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 50%;  
-  min-width: 100px;
+  width: 48%; /* Casi la mitad para dejar espacio */
 }
 
-.cancel-btn{
-    background-color: #1b9cdd;
-  color: black;
-  border-color: #1b9cdd;
-}
-
-.submit-btn{
-  background-color: transparent;
-  color: #1b9cdd;
+.btn-primary {
+  background-color: #1b9cdd;
+  color: #091420;
   border: 2px solid #1b9cdd;
-  border-radius: 9999px; 
-  padding: 0;
-  height: 40px;  
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 50%;  
-  min-width: 100px;
+}
+.btn-primary:hover {
+  background-color: #167aae;
+  border-color: #167aae;
+}
+.btn-primary:disabled {
+    background-color: #1b9cdd80;
+    border-color: #1b9cdd80;
+    cursor: not-allowed;
 }
 
-.submit-btn:hover{
-   background-color: #1b9cdd;
-  color: black;
-  border-color: #1b9cdd;
+.btn-secondary {
+  background-color: transparent;
+  color: #e53935;
+  border: 2px solid #e53935;
+}
+.btn-secondary:hover {
+  background-color: #e53935;
+  color: #091420;
+}
+
+/* Validaciones */
+.error-messages {
+  text-align: left;
+  padding-left: 18px; /* Mantenemos la indentación */
+  min-height: 1.2em; /* Mantenemos para evitar saltos de layout */
+  margin-top: 4px; /* Un pequeño espacio positivo para separar del campo */
+}
+
+.error-messages small {
+  color: #e53935;
+  font-size: 0.8em;
+}
+
+.api-error {
+  text-align: center;
+  background-color: #e5393520;
+  border: 1px solid #e53935;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+  .register-card { width: 90%; min-width: 320px; }
+  .dropdown-row { flex-direction: column; }
 }
