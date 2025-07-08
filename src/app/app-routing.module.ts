@@ -5,6 +5,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CargaComponent } from './pages/carga/carga.component';
 import { ResumenComponent } from './pages/resumen/resumen.component';
 import { RegistroComponent } from './pages/registro/registro.component';
+import { AdminGuard } from './guards/admin.guard';
 
 const routes: Routes = [
 
@@ -15,7 +16,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'resumen', pathMatch: 'full' }, 
       { path: 'resumen', component: ResumenComponent},
       { path: 'cargas', component: CargaComponent},
-      { path: 'registro', component: RegistroComponent}
+      { path: 'registro', component: RegistroComponent, canActivate: [AdminGuard] }
     ]
   }
 

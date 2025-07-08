@@ -1,29 +1,34 @@
+<!-- En: src/app/pages/dashboard/dashboard.component.html -->
 <div class="dashboard-card">
     <div class="panelizq">
         <div class="contenedor-logo">
             <img src="assets/pictures/Cenel logo.png" alt="Logo" class="logo" />
         </div>
-        <div class="contenedor-username">
-            <label for="text" class="nombre-usuario">Gerente: Angelo Meza</label>
+        
+        <!-- Nombre de usuario dinámico -->
+        <div class="contenedor-username" *ngIf="user$ | async as user">
+            <label class="nombre-usuario">{{ user.role }}: {{ user.username }}</label>
         </div>
 
         <div class="linea-azul"></div>
 
         <button class="btnnavbar" routerLink="/dashboard/resumen" routerLinkActive="activo">Inicio</button>
         <button class="btnnavbar" routerLink="/dashboard/cargas" routerLinkActive="activo">Carga de datos</button>
-        <button class="btnnavbar" routerLink="/dashboard/ajustes">Historial</button>
-        <button class="btnnavbar" routerLink="/dashboard/ajustes">Predic</button>
-        <button class="btnnavbar" routerLink="/dashboard/ajustes">Comparaciones</button>
+        <!-- ... otros botones ... -->
 
         <div class="linea-azul"></div>
 
-        <button class="btnnavbar" routerLink="/dashboard/registro" routerLinkActive="activo">Registro</button>
+        <!-- ¡AQUÍ ESTÁ LA MAGIA! Botón de Registro condicional -->
+        <!-- Usamos el getter 'auth' y el método 'hasRole'. Tu API devuelve 'Administrator' -->
+        <button *ngIf="auth.hasRole('Administrator')" class="btnnavbar" routerLink="/dashboard/registro" routerLinkActive="activo">
+            Registro
+        </button>
+
+        <!-- Botón para cerrar sesión -->
+        <button class="btnnavbar" (click)="logout()">Cerrar sesión</button>
 
     </div>
     <div class="panelder">
-
         <router-outlet></router-outlet>
-
     </div>
-    
 </div>

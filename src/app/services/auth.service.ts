@@ -1,20 +1,42 @@
+// En: src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
-// He renombrado la interfaz para que coincida con el nombre de tu DTO en el backend
+// --- 1. DEFINIMOS LAS INTERFACES AQUÍ MISMO ---
+
+// Para enviar las credenciales
 export interface LoginDto {
   username: string;
   password: string;
 }
 
-// Interfaz para la respuesta que esperas de tu API (basado en tu AuthController)
-export interface AuthResponse {
+// Para modelar la respuesta REAL de tu API (con PascalCase)
+// Esto es un reflejo exacto de tu JSON.
+export interface ApiResponse {
   success: boolean;
   message: string;
-  data: any; // Puedes definir una interfaz más estricta si quieres
   accessToken: string;
+  data: {
+    AccessToken: string;
+    RefreshToken?: string;
+    User: {
+      Id: string;
+      Username: string;
+      Email: string;
+      RoleName: string; // <-- La propiedad clave
+    }
+  };
+}
+
+// Nuestra interfaz INTERNA para la app (limpia y en camelCase)
+export interface AppUser {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
 }
 
 @Injectable({
@@ -22,83 +44,82 @@ export interface AuthResponse {
 })
 export class AuthService {
 
-  // === PASO 1: CORRIGE LA URL DE TU API ===
-  // Usa la URL que aparece en la consola de Visual Studio cuando ejecutas el backend.
-  private apiUrl = 'https://localhost:7118/api/v1/Auth'; // <-- ¡MUY IMPORTANTE CAMBIAR ESTO!
+  private apiUrl = 'https://localhost:7118/api/v1/Auth';
 
-  constructor(private http: HttpClient) { }
+  // --- 2. GESTOR DE ESTADO DEL USUARIO ---
+  // BehaviorSubject notificará a toda la app cuando el usuario cambie.
+  private currentUserSubject: BehaviorSubject<AppUser | null>;
+  public currentUser$: Observable<AppUser | null>;
 
-  /**
-   * Método para iniciar sesión. Conecta con la API real.
-   * @param credentials - Un objeto con 'username' y 'password'.
-   * @returns un Observable con la respuesta de la API.
-   */
-  login(credentials: LoginDto): Observable<AuthResponse> {
-    
-    console.log('[AuthService] Intentando iniciar sesión con:', credentials);
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {
+    const storedUser = localStorage.getItem('currentUser');
+    this.currentUserSubject = new BehaviorSubject<AppUser | null>(storedUser ? JSON.parse(storedUser) : null);
+    this.currentUser$ = this.currentUserSubject.asObservable();
+  }
 
-    // === PASO 2: LLAMADA REAL A LA API ===
-    // Ahora usamos el método real 'http.post' y eliminamos la simulación.
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
+  // Getter para acceder fácilmente al valor actual del usuario
+  public get currentUserValue(): AppUser | null {
+    return this.currentUserSubject.value;
+  }
+
+  // --- 3. MÉTODO LOGIN MEJORADO ---
+  login(credentials: LoginDto): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        // 'tap' se ejecuta cuando la respuesta es exitosa (código 200-299).
-        // Aquí guardamos el token JWT que nos devuelve la API.
         if (response && response.success && response.accessToken) {
-          console.log('[AuthService] Login exitoso. Respuesta de la API:', response);
           localStorage.setItem('jwtToken', response.accessToken);
-          console.log('[AuthService] Token guardado en localStorage.');
-        } else {
-          // Si success es false pero la API responde con 200 OK (esto no debería pasar, pero por si acaso)
-          console.warn('[AuthService] La API respondió con éxito pero el campo "success" es falso.');
+
+          // --- "TRADUCCIÓN" DE LA API A NUESTRO MODELO INTERNO ---
+          const appUser: AppUser = {
+            id: response.data.User.Id,
+            username: response.data.User.Username,
+            email: response.data.User.Email,
+            role: response.data.User.RoleName // Mapeamos RoleName a nuestra propiedad 'role'
+          };
+
+          // Guardamos nuestro objeto de usuario limpio
+          localStorage.setItem('currentUser', JSON.stringify(appUser));
+          // Notificamos a toda la app que el usuario ha cambiado
+          this.currentUserSubject.next(appUser);
         }
       }),
-      catchError(this.handleError) // 'catchError' se ejecuta si la API devuelve un error (código 4xx o 5xx).
+      catchError(this.handleError)
     );
   }
 
-  /**
-   * Método para cerrar sesión.
-   */
-  logout(): void {
-    console.log('[AuthService] Cerrando sesión.');
-    localStorage.removeItem('jwtToken');
-    // Aquí también podrías redirigir al usuario a la página de login.
-    // (necesitarías inyectar `Router` en el constructor)
-    // this.router.navigate(['/login']);
-  }
-
-  /**
-   * Método para obtener el token guardado.
-   * @returns el token JWT o null si no existe.
-   */
-  getToken(): string | null {
-    return localStorage.getItem('jwtToken');
-  }
-
-  /**
-   * Método para comprobar si el usuario está autenticado.
-   * @returns true si hay un token guardado, false si no.
-   */
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  /**
-   * Manejador de errores centralizado para las peticiones HTTP.
-   * Esto te dará mensajes de error mucho más claros en la consola.
-   */
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocurrió un error desconocido.';
-    if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente o de red. (Ej: no hay conexión a internet)
-      errorMessage = `Error del cliente: ${error.error.message}`;
-    } else {
-      // El backend devolvió un código de error.
-      // Tu API devuelve un objeto con un campo "message", así que lo usamos.
-      errorMessage = error.error?.message || `Error del servidor: ${error.status}. Por favor, revise la consola del backend.`;
+  // --- 4. MÉTODO PARA VERIFICAR ROLES ---
+  public hasRole(requiredRole: string): boolean {
+    if (!this.currentUserValue) {
+      return false; // No hay usuario
     }
-    console.error(`[AuthService] Error en la petición: ${errorMessage}`);
-    // Devolvemos un observable que emite el error para que el componente que llamó al login lo pueda manejar.
+    // Comparamos el rol del usuario con el requerido (insensible a mayúsculas/minúsculas)
+    // Usamos 'Administrator' porque es lo que devuelve tu API.
+    return this.currentUserValue.role.toLowerCase() === requiredRole.toLowerCase();
+  }
+
+  logout(): void {
+    // Limpiamos todo
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/login']);
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('jwtToken');
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Ocurrió un error desconocido.';
+    if (error.error?.message) {
+      errorMessage = error.error.message;
+    } else {
+      errorMessage = `Error del servidor: ${error.status}.`;
+    }
+    console.error(`[AuthService] Error: ${errorMessage}`);
     return throwError(() => new Error(errorMessage));
   }
 }
