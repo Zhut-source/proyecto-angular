@@ -1,77 +1,140 @@
-.resumen-card{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    
+/* ==========================================================================
+   Contenedor Principal: .resumen-card
+   ========================================================================== */
+.resumen-card {
+  display: flex;
+  flex-direction: column; /* Organiza las áreas (resumen y gráfica) una encima de la otra */
+  gap: 20px; /* Espacio entre el área de resumen y el área de gráficos */
+  height: 100%; /* Ocupa toda la altura disponible de su contenedor padre */
+  padding: 20px; /* Añade un poco de aire alrededor de todo */
+  box-sizing: border-box; /* Asegura que el padding no añada tamaño extra */
+  overflow-y: auto; /* Si el contenido es demasiado alto, permite hacer scroll */
+  justify-content: space-between;
 }
 
-.area-resumen{
-    height: 50%;
-
-}
-.area-resumen{
-    height: 50%;
-    
-}
-
-.titulo-area{
-    margin: 30px;
+/* ==========================================================================
+   Secciones Principales: .area-resumen y .area-grafica
+   ========================================================================== */
+.area-resumen,
+.area-grafica {
+  display: flex;
+  flex-direction: column; /* Los elementos internos (título y contenedor) se apilan */
+  gap: 15px; /* Espacio entre el título y el contenedor de abajo */
 }
 
-.titulo{    
-    color: #f0f0f0;
-    font-size: 18px;
-    font-weight: bold;
+.titulo-area {
+  margin-bottom: 5px; /* Pequeño margen inferior para el título */
 }
 
-.contenedor-cards{
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    justify-content: center;
-    margin: 10px;
-    padding: 10px;    
-    border: 2px solid #247db0;
-    background-color: transparent;
-    border-radius: 15px;
-    height: full;
+.titulo {    
+  color: #f0f0f0;
+  font-size: 1.2rem; /* Usar 'rem' es mejor para la accesibilidad */
+  font-weight: bold;
 }
 
-.card{
-    width: 250px;
-    height: 350px;
-    background-color: white;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: default;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+/* ==========================================================================
+   Contenedor de Tarjetas de Resumen
+   ========================================================================== */
+.contenedor-cards {
+  display: flex;
+  gap: 20px; /* Espacio uniforme entre las tarjetas */
+  flex-wrap: wrap; /* ¡CLAVE! Si no caben en una línea, pasan a la siguiente */
 }
 
-.card:hover{
-    transform: translateY(-6px);
-     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    cursor: pointer;
+.card {
+  flex: 1 1 280px; /* ¡CLAVE! Flex-grow: 1, Flex-shrink: 1, Flex-basis: 280px */
+                    /* Explicación: cada tarjeta INTENTARÁ medir 280px.
+                       Si hay espacio, crecerán para ocupar el hueco (flex-grow: 1).
+                       Si no hay espacio, se encogerán (flex-shrink: 1) y pasarán a la siguiente línea (wrap). */
+  
+  display: flex; /* Hacemos la tarjeta un contenedor flex */
+  flex-direction: column; /* Su contenido se apilará verticalmente */
+
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
 }
 
-
-.contenedor-graficos{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin: 10px;
-    padding: 10px;
-    height: full;
-    border: 2px solid #247db0;
-    background-color: transparent;
-    border-radius: 15px;
-
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-.imagen{
-    width: auto;
-    height: 300px;
+/* --- Estilos internos de la tarjeta --- */
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-icon {
+  font-size: 2.2rem;
+  margin-right: 15px;
+  color: #247db0; /* Damos color al icono */
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+}
+
+.card-body {
+  text-align: center;
+  margin-top: auto; /* ¡CLAVE! Empuja este bloque hacia abajo, alineando los headers */
+}
+
+.card-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #333;
+}
+
+.card-unit {
+  font-size: 0.9rem;
+  color: #777;
+  margin-top: 5px;
+}
+
+.positivo { color: #28a745; }
+.negativo { color: #dc3545; }
+
+/* ==========================================================================
+   Contenedor del Gráfico
+   ========================================================================== */
+.chart-container {
+  /* No necesitamos un contenedor-graficos extra, podemos estilizar este */
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Ocupa todo el ancho de .area-grafica */
+  
+  /* --- ¡CLAVE! Controlamos la altura del gráfico --- */
+  /* El canvas se adaptará a la altura de este contenedor.
+     Puedes ajustar este valor según tus necesidades. */
+  height: 350px; 
+  min-height: 300px; /* Altura mínima para pantallas pequeñas */
+}
+
+/* ==========================================================================
+   Estados de Carga y Error
+   ========================================================================== */
+.estado-info {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 1.1rem;
+  color: #ccc;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.estado-info.error {
+    color: #f8d7da;
+    background-color: rgba(220, 53, 69, 0.2);
 }

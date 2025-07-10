@@ -16,3 +16,10 @@ body, html {
   align-items: center;
   font-family: 'Roboto', sans-serif;
 }
+
+html, body {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}

@@ -1,28 +1,77 @@
 <div class="resumen-card">
     <div class="area-resumen">
         <div class="titulo-area">
-         <label for="text" class="titulo">Ressumen</label>
+         <label class="titulo">Resumen del Sistema</label>
         </div>
-        <div class="contenedor-cards">
-            <div class="card">
 
-            </div>
-            <div class="card">
+        <!-- Manejo de estados de carga y error -->
+        <div *ngIf="isLoading" class="estado-info">Cargando datos del resumen...</div>
+        <div *ngIf="error" class="estado-info error">{{ error }}</div>
+
+        <!-- Usamos un *ngIf para asegurarnos de no mostrar las tarjetas hasta que los datos estén listos -->
+        <div *ngIf="!isLoading && !error" class="contenedor-cards">
             
-            </div>
+            <!-- Tarjeta 1: Carga Total -->
             <div class="card">
-            
+                <div class="card-header">
+                    <span class="card-icon">⚡</span>
+                    <h4 class="card-title">Carga Total del Sistema</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Usamos el pipe 'number' para formatear el número -->
+                    <p class="card-value">{{ kpiTotalLoad | number:'1.0-0' }}</p>
+                    <p class="card-unit">MWh</p>
+                </div>
             </div>
+
+            <!-- Tarjeta 2: Tasa de Crecimiento -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📈</span>
+                    <h4 class="card-title">Tasa de Crecimiento</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Usamos el pipe 'percent' y añadimos una clase condicional para el color -->
+                    <p class="card-value" [ngClass]="{'positivo': kpiGrowthRate > 0, 'negativo': kpiGrowthRate < 0}">
+                        {{ kpiGrowthRate / 100 | percent:'1.1-2' }}
+                    </p>
+                    <p class="card-unit">vs. período anterior</p>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3: Clientes Totales -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">👥</span>
+                    <h4 class="card-title">Clientes Totales</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-value">{{ kpiTotalClients | number }}</p>
+                    <p class="card-unit">Usuarios en el sistema</p>
+                </div>
+            </div>
+
         </div>
     </div>
     
     <div class="area-grafica">
         <div class="titulo-area">
-            <label for="text" class="titulo">Graficos</label>
+            <label class="titulo">Comparación Anual de Consumo</label>
         </div>
-        <div class="contenedor-graficos">
-            <img src="assets/pictures/example.png" alt="ejemplo" class="imagen">
+        
+        <!-- Manejo de estados de carga y error -->
+        <div *ngIf="isLoading" class="estado-info">Cargando gráfico...</div>
+        <div *ngIf="error" class="estado-info error">{{ error }}</div>
+
+        <!-- El contenedor del gráfico -->
+        <div *ngIf="!isLoading && !error" class="chart-container">
+            <!-- ¡AQUÍ ESTÁ LA MAGIA! El canvas que renderiza el gráfico -->
+            <canvas baseChart
+                [data]="barChartData"
+                [options]="barChartOptions"
+                [type]="barChartType"
+                [legend]="barChartLegend">
+            </canvas>
         </div>
     </div>
-    
 </div>
